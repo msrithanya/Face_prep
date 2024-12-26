@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .transactions {
+            margin-top: 30px;
+        }
+
+        .transactions table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transactions th, .transactions td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .transactions th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .summary {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary span {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        footer a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Personal Finance Manager</h1>
+    </header>
+    <div class="container">
+        <h2>Add Transaction</h2>
+        <div class="form-group">
+            <label for="type">Type:</label>
+            <select id="type">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" id="description" placeholder="Enter description">
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" placeholder="Enter amount">
+        </div>
+        <button id="add-transaction">Add Transaction</button>
+
+        <h2>Transaction History</h2>
+        <div class="transactions">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-table">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary">
+            <p>Total Income: <span id="total-income">0</span></p>
+            <p>Total Expenses: <span id="total-expenses">0</span></p>
+            <p>Balance: <span id="balance">0</span></p>
+        </div>
+    </div>
+    <footer>
+        <p>Developed by <a href="#">Rithanya</a> &copy; 2024</p>
+    </footer>
+
+    <script>
+        const transactionTable = document.getElementById('transaction-table');
+        const totalIncomeEl = document.getElementById('total-income');
+        const totalExpensesEl = document.getElementById('total-expenses');
+        const balanceEl = document.getElementById('balance');
+
+        let totalIncome = 0;
+        let totalExpenses = 0;
+
+        document.getElementById('add-transaction').addEventListener('click', () => {
+            const type = document.getElementById('type').value;
+            const description = document.getElementById('description').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (!description || isNaN(amount) || amount <= 0) {
+                alert('Please enter valid description and amount!');
+                return;
+            }
+
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
+                <td>${description}</td>
+                <td style="color: ${type === 'income' ? 'green' : 'red'}">${type === 'income' ? '+' : '-'}${amount.toFixed(2)}</td>
+            `;
+            transactionTable.appendChild(row);
+
+            if (type === 'income') {
+                totalIncome += amount;
+            } else {
+                totalExpenses += amount;
+            }
+
+            updateSummary();
+
+            document.getElementById('description').value = '';
+            document.getElementById('amount').value = '';
+        });
+
+        function updateSummary() {
+            totalIncomeEl.textContent = totalIncome.toFixed(2);
+            totalExpensesEl.textContent = totalExpenses.toFixed(2);
+            balanceEl.textContent = (totalIncome - totalExpenses).toFixed(2);
+        }
+    </script>
+</body>
+</html>
